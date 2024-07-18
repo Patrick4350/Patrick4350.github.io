@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Weather App</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+<div class="card">
+    <div class="search">
+        <input type="text" id="searchBox" placeholder="Enter city name" spellcheck="false" autofocus>
+        <button id="searchButton"><img src="images/search.png"></button>
+    </div>
+    <div class="unit-select">
+        <select id="unitSelect">
+            <option value="metric">Celsius</option>
+            <option value="imperial">Fahrenheit</option>
+            <option value="standard">Kelvin</option>
+        </select>
+    </div>
+    <div class="error">
+        <p>Invalid city name</p>
+    </div>
+    <div class="weather">
+        <img src="images/rain.png" class="weather-icon" alt="Weather Icon">
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">Kumasi</h2>
+        <div class="details">
+            <div class="col">
+                <img src="images/humidity.png">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+            <div class="col">
+                <img src="images/wind.png">
+                <div>
+                    <p class="wind">15 km/h</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <p>Created with ❤️ by Patrick</p>
+</footer>
+
+<script>
+    const apiKey = "7b45aeb89aee36ff38986703f67be434";
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?";
+
+    const searchBox = document.querySelector("#searchBox");
+    const searchButton = document.querySelector("#searchButton");
+    const weatherIcon = document.querySelector(".weather-icon");
+    const unitSelect = document.querySelector("#unitSelect");
+
+
+
+    async function checkWeather(city) {
+        const unit = unitSelect.value;
+        const response = await fetch(apiUrl + `q=${city}&units=${unit}&appid=${apiKey}`);
+
+        if (response.status == 404) {
+            document.querySelector(".error").style.display = "block";
+            document.querySelector(".weather").style.display = "none";
+            document.body.style.backgroundImage = "url('images/error.jpg')";
+        } else {
+            document.querySelector(".error").style.display = "none";
+            const weatherData = await response.json();
+
+            document.querySelector(".city").innerHTML = weatherData.name;
+            document.querySelector(".temp").innerHTML = Math.round(weatherData.main.temp) + (unit === 'metric' ? '°C' : unit === 'imperial' ? '°F' : 'K');
+            document.querySelector(".humidity").innerHTML = weatherData.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = weatherData.wind.speed + " " + (unit === 'imperial' ? 'mph' : 'km/h');
+
+            document.body.style.backgroundImage = "url('images/background3.jpg')"; // Set one background for all successful weather data fetches
+
+            if (weatherData.weather[0].main === "Clouds") {
+                weatherIcon.src = "images/clouds.png";
+            } else if (weatherData.weather[0].main === "Clear") {
+                weatherIcon.src = "images/clear.png";
+            } else if (weatherData.weather[0].main === "Rain") {
+                weatherIcon.src = "images/rain.png";
+            } else if (weatherData.weather[0].main === "Drizzle") {
+                weatherIcon.src = "images/drizzle.png";
+            } else if (weatherData.weather[0].main === "Mist") {
+                weatherIcon.src = "images/mist.png";
+            } else {
+                weatherIcon.src = "images/default.png";
+            }
+
+            document.querySelector(".weather").style.display = "block";
+        }
+    }
+
+    searchButton.addEventListener("click", () => {
+        checkWeather(searchBox.value);
+    });
+
+    unitSelect.addEventListener("change", () => {
+        if (searchBox.value.trim() !== "") {
+            checkWeather(searchBox.value);
+        }
+    });
+
+    searchBox.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            checkWeather(searchBox.value);
+        }
+    });
+</script>
+</body>
+</html>
