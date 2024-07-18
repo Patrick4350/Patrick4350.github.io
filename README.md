@@ -1,7 +1,3 @@
-Certainly! Here's a short README template for your GitHub repository:
-
----
-
 # Weather App
 
 This is a simple weather web application that allows users to check the current weather conditions for a specified city.
@@ -55,7 +51,3 @@ Contributions are welcome! Feel free to fork the repository and submit pull requ
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Feel free to customize this README to include any additional information or instructions specific to your project. This template covers the basics to help users understand your Weather App and get started with running it locally or contributing to it.
